@@ -1,0 +1,86 @@
+@startuml
+title "Теплый дом" монолитное приложение диаграмма контекста
+
+top to bottom direction
+
+!includeurl ./C4_Component.puml
+
+Person(user, "Пользователь", 'Пользователь системы "Теплый дом"')
+Person(admin, "Специалист по обслуживанию системы", 'Сотрудник компании "Теплый дом"')
+
+Container(MobileApp, "Мобильное приложение", "React Native", "Получает информацию, управляет умным домом")
+Container(FrontendApp, "Frontend web приложения", "React", "Получает информацию, управляет умным домом")
+Container(ExtRoutingApp, "Внешняя маршрутизация", "Nginx", "Работа со статическими данными, маршрутизация")
+
+System(ControlSystem, "Бэк-энд системы управления умным домом", "Мониторинг и управление умным домом")
+
+Container_Boundary(ControlSystem, "ControlSystem") {
+Container(IntRoutingApp, "Атентификация, авторизация, внутренняя маршрутизация", "Istio", "Атентификация, авторизация, внутренняя маршрутизация систем бэк-энд")
+Container(ControlTempApp, "Приложение системы управления отоплением", "Java", "Управляет отоплением и передает данные о температуре")
+Container(DatabaseTemp, "База данных приложения системы отопления", "PostgreSQL", "Хранит состояние и настройки системы отопления")
+
+Container(ControlLigthApp, "Приложение системы управления светом", "Java", "Включает/выключает свет в доме")
+Container(DatabaseLigth, "База данных приложения системы управления светом", "PostgreSQL", "Хранит состояние и настройки системы освещения")
+
+Container(ControlGateApp, "Приложение системы управления воротами", "Java", "Открывает/закрывает ворота")
+Container(DatabaseGate, "База данных приложения системы управления воротами", "PostgreSQL", "Хранит состояние и настройки системы управления воротами")
+
+Container(ControlDevApp, "Приложение системы управления умными устройствами", "Java", "Подключает, управляет умными устройствами сторонних производителей")
+Container(DatabaseDev, "База данных приложения системы управления умными устройствами", "PostgreSQL", "Хранит состояние и настройки системы управления умными устройствами")
+
+Container(ControlVideoApp, "Приложение системы управления видеонаблюдением", "Java", "Подключает к системе видеонаблюдения, передает поток видео без сохранения")
+
+
+
+Container(MessageBroker, "Брокер сообщений", "Kafka", "Обрабатывает очередь сообщений с внешнимих ситстем")
+}
+
+
+System_Ext(tempSensors, "Система управления температурой", "Мониторит и управляет температурой в доме")
+
+System_Ext(LigthSensors, "Система управления светом", "По команде приложения включают/выключают свет")
+
+System_Ext(GateSensors, "Система управления воротами", "По команде приложения открывает/закрывает ворота")
+
+System_Ext(DevSensors, "Системы управления умными устройствами сторонних производителей", "Разные внешние системы управления устройствами, интеграцию с которыми поддерживает компания")
+
+System_Ext(VideoSensors, "Система видеонаблюдения", "Система видеонаблюдения с поддержкой передачи данных")
+
+Rel(user, MobileApp, "Управляет системой")
+Rel(user, FrontendApp, "Управляет системой")
+Rel(admin,FrontendApp,"Поддержка системы")
+
+Rel(MobileApp, ExtRoutingApp, "Перенаправление данных")
+Rel(FrontendApp, ExtRoutingApp , "Перенаправление данных")
+Rel( ExtRoutingApp, IntRoutingApp , "Перенаправление данных")
+
+Rel(IntRoutingApp, ControlTempApp, "Перенаправление данных")
+Rel(ControlTempApp, DatabaseTemp, "Сохранение/получение данных")
+
+Rel(IntRoutingApp, ControlLigthApp, "Перенаправление данных")
+Rel(ControlLigthApp, DatabaseLigth, "Сохранение/получение данных")
+
+Rel(IntRoutingApp, ControlGateApp, "Перенаправление данных")
+Rel(ControlGateApp, DatabaseGate, "Сохранение/получение данных")
+
+Rel(IntRoutingApp, ControlDevApp, "Перенаправление данных")
+Rel(ControlDevApp, DatabaseDev, "Сохранение/получение данных")
+
+Rel(IntRoutingApp, ControlVideoApp, "Перенаправление данных")
+
+Rel(ControlTempApp,MessageBroker,"Обрабатывает очередь асинхронных сообщений")
+Rel(MessageBroker,tempSensors,"Получает данные с датчиков, управляет реле")
+
+Rel(ControlLigthApp,MessageBroker,"Обрабатывает очередь асинхронных сообщений")
+Rel(MessageBroker,LigthSensors,"Получает данные с датчиков, управляет реле")
+
+Rel(ControlGateApp,MessageBroker,"Обрабатывает очередь асинхронных сообщений")
+Rel(MessageBroker,GateSensors,"Получает данные с датчиков, управляет реле")
+
+Rel(ControlDevApp,MessageBroker,"Обрабатывает очередь асинхронных сообщений")
+Rel(MessageBroker,DevSensors,"Получает данные с датчиков, управляет устройством")
+
+Rel(ControlVideoApp,MessageBroker,"Обрабатывает очередь асинхронных сообщений")
+Rel(MessageBroker,VideoSensors,"Получает данные с камер")
+
+@enduml
