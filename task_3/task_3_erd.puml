@@ -1,0 +1,72 @@
+@startuml
+
+title "Теплый дом"  ER диаграмма
+
+top to bottom direction
+
+
+entity "HomeTable" {
+  * home_id : NUMBER
+  --
+  login : VARCHAR
+  password : VARCHAR
+  address : VARCHAR
+  }
+
+
+
+entity "TempTable" {
+  * home_id : NUMBER
+  * sensor_id : NUMBER
+  --
+  set_temp : DECIMAL
+  cur_temp : DECIMAL
+  is_on : BOOLEAN
+
+}
+
+entity "LigthTable" {
+  * home_id : NUMBER
+  * sensor_id : NUMBER
+  --
+  is_on : BOOLEAN
+
+}
+
+
+entity "GateTable" {
+  * home_id : NUMBER
+  * sensor_id : NUMBER
+  --
+  is_open : BOOLEAN
+
+}
+
+entity "DevTable" {
+  * home_id : NUMBER
+  * dev_id : NUMBER
+  --
+  model_id : NUMBER
+  is_on : BOOLEAN
+
+}
+
+entity "DevModelsTable" {
+ * model_id : NUMBER
+ --
+ model_name : VARCHAR
+ send_dev_url : VARCHAR
+ send_dev_params : VARCHAR
+ return_dev_date : VARCHAR
+}
+
+
+
+HomeTable ||--o{ TempTable
+HomeTable ||--o{ LigthTable
+HomeTable ||--o{ GateTable
+HomeTable ||--o{ DevTable
+DevTable }o--|| DevModelsTable
+
+  
+@enduml

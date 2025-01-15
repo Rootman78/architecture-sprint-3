@@ -1,0 +1,79 @@
+@startuml
+title "Теплый дом" диаграмма кода
+
+top to bottom direction
+
+!includeurl ./C4_Component.puml
+
+class Home {
+  +Int home_id
+  +String login
+  +String password
+  +String role
+  +void register()
+  +void login()
+}
+
+class ControlTempApp {
+  +Int home_id
+  +Int sensor_id
+  +Dec set_temp
+  +Dec cur_temp
+  +Bool is_on
+  +Dec getTemp(sensor_id, home_id)
+  +void setTemp(sensor_id, home_id)
+  +void setIsOn(sensor_id, home_id)
+  +void setIsOff(sensor_id, home_id)
+}
+
+class ControlLigthApp {
+  +Int home_id
+  +Int sensor_id
+  +Bool is_on
+  +Bool getLigthState(sensor_id, home_id)
+  +void setLigthStateOn(sensor_id, home_id)
+  +void setLigthStateOff(sensor_id, home_id)
+
+}
+
+class ControlGateApp {
+  +Int home_id
+  +Int sensor_id
+  +Bool is_open
+  +Bool getGateState(sensor_id, home_id)
+  +void setGateStateOpen(sensor_id, home_id)
+  +void setGateStateClose(sensor_id, home_id)
+}
+
+class ControlDevApp {
+  +Int home_id
+  +Int dev_id
+  +String dev_model
+  +Bool is_on
+  +Array send_dev_date
+  +Array return_dev_date
+  +Array getDevState(sensor_id, dev_id)
+  +Bool addDev(dev_id, dev_model, send_dev_date)
+  +void setDevOn(dev_id)
+  +void setDevOff(dev_id)
+
+
+
+}
+
+class ControlVideoApp {
+  +Int home_id
+  +Int camera_id
+  +Stream getVideo(camera_id, home_id)
+}
+
+
+
+Home "1" -- "0..*" ControlTempApp : has
+Home "1" -- "0..*" ControlLigthApp : has
+Home "1" -- "0..*" ControlGateApp : has
+Home "1" -- "0..*" ControlDevApp : has
+Home "1" -- "0..*" ControlVideoApp : has
+
+
+@enduml
