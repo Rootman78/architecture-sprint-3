@@ -1,0 +1,108 @@
+swagger: '2.0'
+info:
+  title: API системы управления отоплением
+  version: 1.0.0
+paths:
+  /get_all_temp/{home_id}:
+    get:
+      summary: Получить температуру в доме
+      consumes:
+        - application/json
+      parameters:
+        - in: path
+          name: home_id
+          required: true
+          type: integer
+      responses:      
+        '200':
+          description: Температура получена
+          schema:
+            type: object
+            properties:
+              home_id:
+                type: integer
+                example: 1
+              sensor_id:
+                type: integer
+                example: 2
+              cur_temp:
+                type: number
+                format: float
+                example: 22.5 
+        '404':
+          description: Ресурс не найден.
+        '500':
+          description: Внутренняя ошибка сервера.
+  /get_temp/{home_id}/{sensor_id}:
+    get:
+      summary: Получить температуру в указанной комнате
+      description: Возвращает текущую температуру для указанного дома и датчика.
+      parameters:
+        - in: path
+          name: home_id
+          required: true
+          type: integer
+        - in: path
+          name: sensor_id
+          required: true
+          type: integer
+      responses:
+        '200':
+          description: Температура получена
+          schema:
+            type: integer
+            format: float
+            example: 22.5
+        '404':
+          description: Ресурс не найден.
+        '500':
+          description: Внутренняя ошибка сервера.
+            
+  /put_temp/{home_id}/{sensor_id}:
+    put:
+      summary: Установить температуру в определенной комнате
+      consumes:
+        - application/json
+      parameters:
+        - in: path
+          name: home_id
+          required: true
+          type: integer
+        - in: path
+          name: sensor_id
+          required: true
+          type: integer
+        - in: body
+          name: body
+          required: true
+          schema:
+            type: object
+            properties:
+              set_temp:
+                type: string
+              
+      responses:
+        '200':
+          description: Температура установлена
+        '404':
+          description: Ресурс не найден.
+        '500':
+          description: Внутренняя ошибка сервера.
+  /temp_is_on/{home_id}:
+    put:
+      summary: Включить систему отопления
+      consumes:
+        - application/json
+      parameters:
+        - in: path
+          name: home_id
+          required: true
+          type: integer
+      
+      responses:
+        '200':
+          description: Система управления температурой включена
+        '404':
+          description: Ресурс не найден.
+        '500':
+          description: Внутренняя ошибка сервера.
