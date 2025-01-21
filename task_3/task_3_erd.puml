@@ -5,68 +5,60 @@ title "Теплый дом"  ER диаграмма
 top to bottom direction
 
 
-entity "HomeTable" {
-  * home_id : NUMBER
+entity "User" {
+  * user_id : NUMBER
   --
   login : VARCHAR
   password : VARCHAR
+  e-mail : VARCHAR
+  contract_num : VARCHAR
+  }
+
+entity "House" {
+  * house_id : NUMBER
+  --
+  user_id : NUMBER
   address : VARCHAR
+  }
+
+  entity "Device" {
+  * device_id : NUMBER
+  --
+  device_type_id : NUMBER
+  house_id : NUMBER
+  serial_number : VARCHAR
+  status : BOOLEAN
+  }
+
+  entity "DeviceType" {
+  * device_type_id : NUMBER
+  --
+  device_type_info : VARCHAR
+  }
+
+  entity "Module" {
+  * module_id : NUMBER
+  --
+  device_id: NUMBER
+  module_info : VARCHAR
+  }
+
+  entity "TelemetryData" {
+  * telemety_id : NUMBER
+  --
+  module_id : NUMBER
+  send_dev_url : VARCHAR
+  send_dev_data : VARCHAR
+  return_dev_date : VARCHAR
   }
 
 
 
-entity "TempTable" {
-  * home_id : NUMBER
-  * sensor_id : NUMBER
-  --
-  set_temp : DECIMAL
-  cur_temp : DECIMAL
-  is_on : BOOLEAN
-
-}
-
-entity "LigthTable" {
-  * home_id : NUMBER
-  * sensor_id : NUMBER
-  --
-  is_on : BOOLEAN
-
-}
-
-
-entity "GateTable" {
-  * home_id : NUMBER
-  * sensor_id : NUMBER
-  --
-  is_open : BOOLEAN
-
-}
-
-entity "DevTable" {
-  * home_id : NUMBER
-  * dev_id : NUMBER
-  --
-  model_id : NUMBER
-  is_on : BOOLEAN
-
-}
-
-entity "DevModelsTable" {
- * model_id : NUMBER
- --
- model_name : VARCHAR
- send_dev_url : VARCHAR
- send_dev_params : VARCHAR
- return_dev_date : VARCHAR
-}
-
-
-
-HomeTable ||--o{ TempTable
-HomeTable ||--o{ LigthTable
-HomeTable ||--o{ GateTable
-HomeTable ||--o{ DevTable
-DevTable }o--|| DevModelsTable
+User ||--|{ House
+House ||--|{ Device
+Device }o--|| DeviceType
+Device ||--|{ Module
+Module ||--o{ TelemetryData
 
   
 @enduml
